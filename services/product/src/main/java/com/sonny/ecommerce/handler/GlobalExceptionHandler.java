@@ -1,7 +1,7 @@
-package com.sonny.ecommerce;
+package com.sonny.ecommerce.handler;
 
-import com.sonny.ecommerce.exception.CustomerNotFoundException;
-import com.sonny.ecommerce.handler.ErrorResponse;
+import com.sonny.ecommerce.exception.ProductPurchaseException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,10 +13,10 @@ import java.util.HashMap;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<String> handleCustomerNotFoundException(CustomerNotFoundException e) {
+    @ExceptionHandler(ProductPurchaseException.class)
+    public ResponseEntity<String> handleProductPurchaseException(ProductPurchaseException e) {
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
 
@@ -33,4 +33,10 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(errors));
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
 }

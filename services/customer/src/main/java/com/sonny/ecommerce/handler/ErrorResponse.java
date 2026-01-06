@@ -1,4 +1,4 @@
-package com.sonny.ecommerce;
+package com.sonny.ecommerce.handler;
 
 import java.util.Map;
 
