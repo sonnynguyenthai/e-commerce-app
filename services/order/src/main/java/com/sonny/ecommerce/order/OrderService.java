@@ -6,6 +6,9 @@ import com.sonny.ecommerce.kafka.OrderConfirmation;
 import com.sonny.ecommerce.kafka.OrderProducer;
 import com.sonny.ecommerce.orderline.OrderLineReq;
 import com.sonny.ecommerce.orderline.OrderLineService;
+import com.sonny.ecommerce.payment.PaymentReqDTO;
+import com.sonny.ecommerce.paymnet.PaymentClient;
+import com.sonny.ecommerce.paymnet.PaymentReq;
 import com.sonny.ecommerce.product.ProductClient;
 import com.sonny.ecommerce.product.PurchaseReq;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,6 +29,8 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
+
     public Integer create(OrderReqDTO req) {
         //check customer
         var customer = customerClient.findById(req.customerId())
@@ -48,6 +53,15 @@ public class OrderService {
                     )
             );
         }
+
+        var paymentRequest = new PaymentReq(
+                req.amount(),
+                req.paymentMethod(),
+                req.id(),
+                req.reference(),
+                customer
+        );
+        paymentClient.requestOrderPayment(paymentRequest);
         //start payment process
         orderProducer.sendOrderConfirmation(
                 new OrderConfirmation(
