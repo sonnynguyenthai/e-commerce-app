@@ -16,7 +16,7 @@ public class PaymentService {
 
     public  Integer save(@Valid PaymentReqDTO req) {
         var payment =  paymentRepository.save(paymentMapper.toPayment(req));
-        notificationProducer.send(paymentMapper.toPaymentNotificationReq(payment, req));
+        notificationProducer.send(paymentMapper.toPaymentConfirmation(payment, req));
         return payment.getId();
     }
 }

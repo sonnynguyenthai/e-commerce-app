@@ -1,7 +1,6 @@
 package com.sonny.ecommerce.payment;
 
-import com.sonny.ecommerce.notification.PaymentNotificationReq;
-import lombok.Data;
+import com.sonny.ecommerce.notification.PaymentConfirmation;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,9 +15,8 @@ public class PaymentMapper {
                 .build();
     }
 
-    public PaymentNotificationReq toPaymentNotificationReq(Payment payment, PaymentReqDTO req) {
-        return new PaymentNotificationReq(
-                payment.getId(),
+    public PaymentConfirmation toPaymentConfirmation(Payment payment, PaymentReqDTO req) {
+        return new PaymentConfirmation(
                 req.orderReference(),
                 payment.getAmount(),
                 payment.getPaymentMethod(),

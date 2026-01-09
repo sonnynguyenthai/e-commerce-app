@@ -4,7 +4,7 @@ import com.sonny.ecommerce.payment.PaymentMethod;
 
 import java.math.BigDecimal;
 
-public record PaymentNotificationReq(
+public record PaymentConfirmation(
         String orderReference,
         BigDecimal amount,
         PaymentMethod paymentMethod,
