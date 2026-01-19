@@ -1,4 +1,4 @@
-package com.sonny.ecomerce.kafka.payment;
+package com.sonny.ecommerce.kafka.payment;
 
 public enum PaymentMethod {
     PAYPAL,

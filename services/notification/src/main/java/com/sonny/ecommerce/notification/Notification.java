@@ -1,7 +1,7 @@
-package com.sonny.ecomerce.notification;
+package com.sonny.ecommerce.notification;
 
-import com.sonny.ecomerce.kafka.order.OrderConfirmation;
-import com.sonny.ecomerce.kafka.payment.PaymentConfirmation;
+import com.sonny.ecommerce.kafka.order.OrderConfirmation;
+import com.sonny.ecommerce.kafka.payment.PaymentConfirmation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

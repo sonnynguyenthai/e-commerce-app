@@ -1,4 +1,4 @@
-package com.sonny.ecomerce.email;
+package com.sonny.ecommerce.email;
 
 import lombok.Getter;
 

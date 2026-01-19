@@ -1,7 +1,6 @@
 package com.sonny.ecommerce.order;
 
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,10 +9,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/orders")
-@RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    private final OrderMapper orderMapper;
+    OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
     @PostMapping
     public ResponseEntity<Integer> createOrder(@RequestBody OrderReqDTO req) {
         return  ResponseEntity.ok(orderService.create(req));

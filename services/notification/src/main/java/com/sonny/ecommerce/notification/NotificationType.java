@@ -1,4 +1,4 @@
-package com.sonny.ecomerce.notification;
+package com.sonny.ecommerce.notification;
 
 public enum NotificationType {
     ORDER_CONFIRMATION,

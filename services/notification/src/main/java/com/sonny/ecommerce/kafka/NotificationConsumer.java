@@ -1,21 +1,20 @@
-package com.sonny.ecomerce.kafka;
+package com.sonny.ecommerce.kafka;
 
-import com.sonny.ecomerce.email.EmailService;
-import com.sonny.ecomerce.kafka.order.OrderConfirmation;
-import com.sonny.ecomerce.kafka.payment.PaymentConfirmation;
-import com.sonny.ecomerce.notification.Notification;
-import com.sonny.ecomerce.notification.NotificationRepository;
+import com.sonny.ecommerce.email.EmailService;
+import com.sonny.ecommerce.kafka.order.OrderConfirmation;
+import com.sonny.ecommerce.kafka.payment.PaymentConfirmation;
+import com.sonny.ecommerce.notification.Notification;
+import com.sonny.ecommerce.notification.NotificationRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-import static com.sonny.ecomerce.notification.NotificationType.ORDER_CONFIRMATION;
-import static com.sonny.ecomerce.notification.NotificationType.PAYMENT_CONFIRMATION;
+import static com.sonny.ecommerce.notification.NotificationType.ORDER_CONFIRMATION;
+import static com.sonny.ecommerce.notification.NotificationType.PAYMENT_CONFIRMATION;
 
 @Service
 @RequiredArgsConstructor

@@ -2,7 +2,9 @@ package com.sonny.ecommerce.orderline;
 
 import com.sonny.ecommerce.order.Order;
 import com.sonny.ecommerce.order.OrderResDTO;
+import org.springframework.stereotype.Service;
 
+@Service
 public class OrderLineMapper {
     public OrderLine mapToOrder(OrderLineReq orderLineReq) {
         return OrderLine

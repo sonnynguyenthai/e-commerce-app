@@ -1,4 +1,4 @@
-package com.sonny.ecomerce.kafka.order;
+package com.sonny.ecommerce.kafka.order;
 
 import java.math.BigDecimal;
 

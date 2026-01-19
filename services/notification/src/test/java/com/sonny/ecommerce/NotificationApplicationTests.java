@@ -1,4 +1,4 @@
-package com.sonny.ecomerce;
+package com.sonny.ecommerce;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

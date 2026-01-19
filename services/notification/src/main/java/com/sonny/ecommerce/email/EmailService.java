@@ -1,6 +1,6 @@
-package com.sonny.ecomerce.email;
+package com.sonny.ecommerce.email;
 
-import com.sonny.ecomerce.kafka.order.PurchaseRes;
+import com.sonny.ecommerce.kafka.order.PurchaseRes;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.sonny.ecomerce.email.EmailTemplates.PAYMENT_CONFIRMATION;
+import static com.sonny.ecommerce.email.EmailTemplates.PAYMENT_CONFIRMATION;
 
 @Service
 @RequiredArgsConstructor

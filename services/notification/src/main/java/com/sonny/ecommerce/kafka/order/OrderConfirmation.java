@@ -1,6 +1,6 @@
-package com.sonny.ecomerce.kafka.order;
+package com.sonny.ecommerce.kafka.order;
 
-import com.sonny.ecomerce.kafka.payment.PaymentMethod;
+import com.sonny.ecommerce.kafka.payment.PaymentMethod;
 
 import java.math.BigDecimal;
 import java.util.List;

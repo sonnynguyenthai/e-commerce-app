@@ -18,7 +18,7 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
     public String create(CustomerReqDTO req) {
         var customer = customerRepository.save(customerMapper.toCustomer(req));
-        return customer.toString();
+        return customer.getId();
     }
 
     public void update(CustomerReqDTO req) {

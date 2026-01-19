@@ -5,4 +5,5 @@ public enum PaymentMethod {
     STRIPE,
     VISA,
     MASTERCARD,
+    CREDIT_CARD,
 }

@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderLineService {
-    OrderLineRepository orderLineRepository;
-    OrderLineMapper orderLineMapper;
+    private final OrderLineRepository orderLineRepository;
+    private final OrderLineMapper orderLineMapper;
     public Integer saveOrderLine(OrderLineReq orderLineReq) {
         return orderLineRepository.save(orderLineMapper.mapToOrder(orderLineReq)).getId();
     }

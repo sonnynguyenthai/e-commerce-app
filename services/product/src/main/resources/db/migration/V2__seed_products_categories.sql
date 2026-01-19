@@ -1,3 +1,24 @@
+-- ===============================
+-- INSERT CATEGORY (IDEMPOTENT)
+-- ===============================
+insert into category (id, name, description)
+values
+    (nextval('category_seq'), 'Electronics', 'Electronic devices and gadgets')
+on conflict (name) do nothing;
+
+insert into category (id, name, description)
+values
+    (nextval('category_seq'), 'Books', 'Books and learning materials')
+on conflict (name) do nothing;
+
+insert into category (id, name, description)
+values
+    (nextval('category_seq'), 'Clothing', 'Men and women clothing')
+on conflict (name) do nothing;
+
+-- ===============================
+-- INSERT PRODUCT (SAFE SUBQUERY)
+-- ===============================
 insert into product (id, name, description, available_quantity, price, category_id)
 values
     (
@@ -32,4 +53,5 @@ values
         19.99,
         (select id from category where name = 'Clothing')
     );
+
 
