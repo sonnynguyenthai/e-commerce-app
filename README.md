@@ -6,12 +6,27 @@ A modern, scalable e-commerce platform built with microservices architecture usi
 
 This application follows a microservices architecture pattern with the following components:
 
-- **API Gateway**: Single entry point for all client requests
+- **API Gateway**: Single entry point for all client requests with OAuth2 authentication
 - **Service Discovery**: Eureka-based service registry for dynamic service discovery
 - **Config Server**: Centralized configuration management
+- **Identity & Access Management**: Keycloak for authentication and authorization
 - **Business Services**: Customer, Product, Order, Payment, and Notification services
 - **Message Broker**: Kafka for asynchronous event-driven communication
 - **Distributed Tracing**: Zipkin for request tracing across services
+
+### Architecture Diagram
+
+![E-Commerce Microservices Architecture](diagrams/architecture-diagram.png)
+
+The diagram above illustrates the complete system architecture, showing:
+
+- **Public Network**: API Gateway and Keycloak handling external requests and authentication
+- **Private Network**: Core microservices (Customer, Product, Order, Payment, Notification) with their respective databases
+- **Service Communication**: 
+  - Synchronous REST calls between services (e.g., Order → Customer, Order → Product, Order → Payment)
+  - Asynchronous messaging via Kafka Message Broker for order and payment confirmations
+- **Infrastructure Services**: Eureka for service discovery, Config Server for centralized configuration, and Zipkin for distributed tracing
+- **Data Storage**: MongoDB for Customer and Notification services, PostgreSQL for Product, Order, and Payment services
 
 ## 🚀 Technology Stack
 
@@ -36,6 +51,11 @@ This application follows a microservices architecture pattern with the following
 - **Apache Kafka** - Event streaming platform for asynchronous communication
 - **Zookeeper** - Coordination service for Kafka
 
+### Security & Authentication
+- **Keycloak** - Identity and Access Management (IAM) server
+- **Spring Security OAuth2 Resource Server** - JWT-based authentication
+- **JWT (JSON Web Tokens)** - Token-based authentication
+
 ### Observability & Monitoring
 - **Zipkin** - Distributed tracing system
 - **Spring Boot Actuator** - Application monitoring and metrics
@@ -56,6 +76,7 @@ This application follows a microservices architecture pattern with the following
 - **Email Notifications**: Send order and payment confirmation emails via Kafka
 - **Service Discovery**: Automatic service registration and discovery
 - **API Gateway**: Unified API endpoint with routing and load balancing
+- **Authentication & Authorization**: OAuth2/JWT-based security with Keycloak
 - **Distributed Tracing**: Track requests across multiple services
 - **Configuration Management**: Centralized configuration with Spring Cloud Config
 
@@ -111,6 +132,7 @@ This will start the following services:
 - Kafka (port 29092)
 - MailDev (ports 1080, 1025)
 - Zipkin (port 9411)
+- **Keycloak** (port 9080)
 
 ### 3. Build the Project
 
@@ -178,18 +200,84 @@ mvn spring-boot:run
 ```
 Gateway Service runs on port **8222**
 
-### 5. Verify Services
+### 5. Configure Keycloak
+
+After Keycloak starts, access the admin console and set up the realm:
+
+1. **Access Keycloak Admin Console**: http://localhost:9080
+2. **Login**: 
+   - Username: `admin`
+   - Password: `admin`
+3. **Create a Realm**: 
+   - Click "Create Realm" or select from the realm dropdown
+   - Name: `microservice` (must match the realm name in gateway configuration)
+4. **Create a Client**:
+   - Go to Clients → Create
+   - Client ID: `ecommerce-client` (or your preferred name)
+   - Client Protocol: `openid-connect`
+   - Access Type: `public` or `confidential` based on your needs
+   - Valid Redirect URIs: `http://localhost:8222/*`
+   - Web Origins: `http://localhost:8222`
+5. **Create Users** (optional):
+   - Go to Users → Add user
+   - Set username and credentials
+
+### 6. Verify Services
 
 - **Eureka Dashboard**: http://localhost:8761
 - **API Gateway**: http://localhost:8222
+- **Keycloak Admin Console**: http://localhost:9080
 - **Zipkin**: http://localhost:9411
 - **PgAdmin**: http://localhost:5050
 - **Mongo Express**: http://localhost:8081
 - **MailDev**: http://localhost:1080
 
+## 🔐 Authentication & Authorization
+
+The API Gateway is secured with OAuth2/JWT authentication using Keycloak. All API endpoints (except `/eureka/**`) require a valid JWT token.
+
+### Getting an Access Token
+
+#### Using Keycloak Admin Console:
+1. Access Keycloak: http://localhost:9080
+2. Navigate to your realm → Clients → Select your client
+3. Go to the "Credentials" tab to get the client secret (if using confidential client)
+4. Use the token endpoint to get an access token
+
+#### Using cURL:
+```bash
+# Get access token (replace with your actual client credentials)
+curl -X POST http://localhost:9080/realms/microservice/protocol/openid-connect/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "client_id=ecommerce-client" \
+  -d "username=your-username" \
+  -d "password=your-password" \
+  -d "grant_type=password"
+```
+
+#### Using Postman or Similar Tools:
+1. Set request type to POST
+2. URL: `http://localhost:9080/realms/microservice/protocol/openid-connect/token`
+3. Body (x-www-form-urlencoded):
+   - `grant_type`: `password`
+   - `client_id`: `ecommerce-client`
+   - `username`: `your-username`
+   - `password`: `your-password`
+
+### Making Authenticated Requests
+
+Include the access token in the Authorization header:
+
+```bash
+curl -X GET http://localhost:8222/api/v1/products \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
 ## 🔌 API Endpoints
 
 All API requests should be made through the API Gateway at `http://localhost:8222`.
+
+**Note**: All endpoints require authentication via JWT token (except `/eureka/**`).
 
 ### Customer Service
 - `POST /api/v1/customers` - Create a new customer
@@ -244,6 +332,21 @@ Each service has its own configuration file:
 - `notification-service.yml`
 - `discovery-service.yml`
 
+### Keycloak Configuration
+
+The Gateway service is configured to use Keycloak as the OAuth2 resource server:
+
+```yaml
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:9080/realms/microservice"
+```
+
+**Important**: The realm name in Keycloak must match the realm name in the configuration (`microservice`).
+
 ## 🔄 Service Communication
 
 - **Synchronous**: Services communicate using **OpenFeign** for REST API calls
@@ -279,11 +382,18 @@ The `docker-compose.yml` file includes all infrastructure services needed for th
 - **PostgreSQL**: Primary relational database
 - **MongoDB**: Document database for customer service
 - **Kafka & Zookeeper**: Message broker for event streaming
+- **Keycloak**: Identity and Access Management server
 - **MailDev**: Email testing tool
 - **Zipkin**: Distributed tracing
 - **PgAdmin & Mongo Express**: Database administration tools
 
 ## 🔐 Default Credentials
+
+### Keycloak
+- **Admin Console**: http://localhost:9080
+- **Admin Username**: `admin`
+- **Admin Password**: `admin`
+- **Realm**: `microservice` (must be created manually)
 
 ### PostgreSQL (PgAdmin)
 - Email: `pgadmin4@pgadmin.org`
@@ -298,8 +408,11 @@ The `docker-compose.yml` file includes all infrastructure services needed for th
 - Services are configured to use Spring Cloud Config Server for centralized configuration
 - All services register with Eureka for service discovery
 - The API Gateway routes requests to appropriate services using service names
+- **All API endpoints are secured with OAuth2/JWT authentication via Keycloak**
+- The Gateway validates JWT tokens against Keycloak's issuer URI
 - Database migrations are handled by Flyway
 - Email notifications are sent asynchronously via Kafka
+- Keycloak realm must be created and configured before making authenticated API calls
 
 ## 📝 License
 
